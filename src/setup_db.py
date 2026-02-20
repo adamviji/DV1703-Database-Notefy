@@ -25,9 +25,33 @@ def init_db(conn):
     cursor.execute(f"USE `{DB_NAME}`")
     cursor.close()
 
+def init_schema(conn) -> None:
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS Genre (
+            Genre_ID INT AUTO_INCREMENT PRIMARY KEY,
+            Name VARCHAR(100) NOT NULL,
+            Description VARCHAR(255)
+        )
+        """
+    )
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS Chord (
+            Chord_ID INT AUTO_INCREMENT PRIMARY KEY,
+            Name VARCHAR(55) NOT NULL 
+        )
+        """
+    )
+    conn.commit()
+    cursor.close()
+    print("Table är skapade!")
+
 
 if __name__ == "__main__":
     conn = get_connection()
     init_db(conn)
+    init_schema(conn)
     conn.close()
     print("Uppkoppling lyckades och databasen är skapad!")
