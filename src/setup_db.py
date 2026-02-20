@@ -44,6 +44,30 @@ def init_schema(conn) -> None:
         )
         """
     )
+    cursor.execute(
+        """
+    CREATE TABLE IF NOT EXISTS User (
+        User_ID INT AUTO_INCREMENT PRIMARY KEY,
+        Username VARCHAR(55) NOT NULL UNIQUE,
+        Email VARCHAR(255) NOT NULL UNIQUE,
+        password_hash VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """
+    )
+    cursor.execute(
+        """
+    CREATE TABLE IF NOT EXISTS Song (
+        Song_ID INT AUTO_INCREMENT PRIMARY KEY,
+        Title VARCHAR(255) NOT NULL,
+        Genre_ID INT,
+        original_key VARCHAR(255),
+        difficulty ENUM('beginner', 'intermediate', 'advanced') NOT NULL,
+        year INT,
+        FOREIGN KEY (Genre_ID) REFERENCES Genre(Genre_ID)
+    )
+    """
+    )
     conn.commit()
     cursor.close()
     print("Table är skapade!")
