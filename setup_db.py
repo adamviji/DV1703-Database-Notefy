@@ -29,7 +29,7 @@ def init_schema(conn) -> None:
         """
         CREATE TABLE IF NOT EXISTS Genre (
             Genre_ID INT AUTO_INCREMENT PRIMARY KEY,
-            Name VARCHAR(100) NOT NULL,
+            Name VARCHAR(100) NOT NULL UNIQUE,
             Description VARCHAR(255)
         )
         """
@@ -38,7 +38,7 @@ def init_schema(conn) -> None:
         """
         CREATE TABLE IF NOT EXISTS Chord (
             Chord_ID INT AUTO_INCREMENT PRIMARY KEY,
-            Name VARCHAR(55) NOT NULL 
+            Name VARCHAR(55) NOT NULL UNIQUE 
         )
         """
     )
@@ -94,7 +94,7 @@ def init_schema(conn) -> None:
 
 
 if __name__ == "__main__":
-    conn = get_connection()
+    conn = get_connection_no_db()
     init_db(conn)
     init_schema(conn)
     conn.close()
