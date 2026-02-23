@@ -68,6 +68,28 @@ def init_schema(conn) -> None:
     )
     """
     )
+    cursor.execute(
+        """
+    CREATE TABLE IF NOT EXISTS SongChords (
+        Song_ID INT NOT NULL,
+        Chord_ID INT NOT NULL,
+        PRIMARY KEY (Song_ID, Chord_ID),
+        FOREIGN KEY (Song_ID) REFERENCES Song(Song_ID),
+        FOREIGN KEY (Chord_ID) REFERENCES Chord(Chord_ID)
+    )
+    """
+    )
+    cursor.execute(
+        """
+    CREATE TABLE IF NOT EXISTS UserFavorites (
+        User_ID INT NOT NULL,
+        Song_ID INT NOT NULL,
+        PRIMARY KEY (User_ID, Song_ID),
+        FOREIGN KEY (User_ID) REFERENCES User(User_ID)
+        FOREIGN KEY (Song_ID) REFERENCES Song(Song_ID),
+    )
+    """
+    )
     conn.commit()
     cursor.close()
     print("Table är skapade!")
