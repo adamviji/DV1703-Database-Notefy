@@ -1,3 +1,5 @@
+from src.database import get_connection
+
 def data_genres(conn):
     cursor = conn.cursor()
     genres = [
@@ -13,7 +15,9 @@ def data_genres(conn):
     conn.commit()
     cursor.commit()
     print("Genres is added")
+
 def data_chords(conn):
+
 
 
 def data_songs(conn):
