@@ -15,7 +15,7 @@ def data_genres(conn):
         "INSERT IGNORE INTO Genre(Name, Description) VALUES (%s, %s)", genres
     )
     conn.commit()
-    cursor.commit()
+    cursor.close()
     print("Genres is added")
 
 def data_chords(conn):
@@ -25,18 +25,18 @@ def data_chords(conn):
         ("A",), ("Em",), ("F",), ("Bm",), ("B",),
     ]
     cursor.executemany(
-        "INSERT IGNORE INTO Chords(Name, Description) VALUES (%s)", chords
-    )
+        "INSERT IGNORE INTO Chord (Name) VALUES (%s)", chords
+        )
     conn.commit()
-    cursor.commit()
+    cursor.close()
     print("Chords added")
 
 
 def data_songs(conn):
     cursor = conn.cursor()
     songs = [
-        ("Paranoid", 1, "E minor", "Medium", 1970),
-        ("Smoke on the Water", 1, "G Minor", "Easy", 1973),
+        ('Paranoid', 1, 'E minor', 'Medium', 1970),
+        ('Smoke on the Water', 1, 'G Minor', 'Easy', 1973),
         ("Eye of the tiger", 1, "C", "Easy", 1982),
         ("Let her go", 2, "G", "Beginner", 2012),
         ("Take me home Country Roads", 4, "G", "Beginner", 1971),
@@ -45,11 +45,12 @@ def data_songs(conn):
     ]
     cursor.executemany(
         """
-        INSERT IGNORE INTO Song(Title, Genre_ID, original_key, difficulty, year) VALUES (%s, %s, %s, %s, %s,)
+        INSERT IGNORE INTO Song (Title, Genre_ID, original_key, difficulty, year)
+        VALUES (%s, %s, %s, %s, %s)
         """, songs
     )
     conn.commit()
-    cursor.commit()
+    cursor.close()
     print("Genres is added")
 
 
