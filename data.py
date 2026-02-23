@@ -40,7 +40,7 @@ def data_songs(conn):
         ("Eye of the tiger", 1, "C", "Easy", 1982),
         ("Let her go", 2, "G", "Beginner", 2012),
         ("Take me home Country Roads", 4, "G", "Beginner", 1971),
-        ("Autumn Leaves", 3, "Am", "Intermediate", 1945)
+        ("Autumn Leaves", 3, "Am", "Intermediate", 1945),
         ("Fallin", 5, "E minor", "Medium", 2001)
     ]
     cursor.executemany(
