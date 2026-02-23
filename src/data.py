@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from src.database import get_connection
 
 def data_genres(conn):
@@ -17,7 +19,27 @@ def data_genres(conn):
     print("Genres is added")
 
 def data_chords(conn):
-
+    cursor = conn.cursor()
+    chords = [
+        ("E",), ("Am",), ("G",), ("D",), ("C",),
+        ("A",), ("Em",), ("F",), ("Bm",), ("B",),
+    ]
+    cursor.executemany(
+        "INSERT IGNORE INTO Chords(Name, Description) VALUES (%s)", chords
+    )
+    conn.commit()
+    cursor.commit()
+    print("Chords added")
 
 
 def data_songs(conn):
+
+
+
+if __name__ == "__main__":
+    conn = get_connection()
+    data_genres(conn)
+    data_chords(conn)
+    data_songs(conn)
+    conn.close()
+    print("Data Added!")
