@@ -85,8 +85,8 @@ def init_schema(conn) -> None:
         User_ID INT NOT NULL,
         Song_ID INT NOT NULL,
         PRIMARY KEY (User_ID, Song_ID),
-        FOREIGN KEY (User_ID) REFERENCES User(User_ID)
-        FOREIGN KEY (Song_ID) REFERENCES Song(Song_ID),
+        FOREIGN KEY (User_ID) REFERENCES User(User_ID),
+        FOREIGN KEY (Song_ID) REFERENCES Song(Song_ID)
     )
     """
     )
