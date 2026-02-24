@@ -58,10 +58,12 @@ def init_schema(conn) -> None:
     CREATE TABLE IF NOT EXISTS Song (
         Song_ID INT AUTO_INCREMENT PRIMARY KEY,
         Title VARCHAR(255) NOT NULL,
+        Artist VARCHAR(255), 
         Genre_ID INT,
         original_key VARCHAR(255),
         difficulty ENUM('beginner', 'intermediate', 'advanced') NOT NULL,
         year INT,
+        UNIQUE (Title, Artist),
         FOREIGN KEY (Genre_ID) REFERENCES Genre(Genre_ID)
     )
     """
