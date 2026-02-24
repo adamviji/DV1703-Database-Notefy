@@ -25,19 +25,33 @@ def get_all_songs():
     conn.close()
     return result
 
+def get_all_genres():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM Genre")
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
+
 def get_filtered_genre_difficulty(genre_ID = None, difficulty = None):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
+
     query = "SELECT * FROM Song WHERE 1=1"
     params = []
+
     if genre_ID:
-        query += " AND Genre_ID = %s"
-        params.append(genre_ID)
+        placeholders = ", ".join(["%s"] * len(genre_ID))
+        query += f" AND Genre_ID IN ({placeholders})"
+        params.extend(genre_ID)
 
     if difficulty:
-        query += " AND difficulty = %s"
-        params.append(difficulty)
-    cursor.execute(query, params)
+        placeholders = ", ".join(["%s"] * len(difficulty))
+        query += f" AND difficulty IN ({placeholders})"
+        params.extend(difficulty)
+
+    cursor.execute(query, params if params else None)
     result = cursor.fetchall()
     cursor.close()
     conn.close()

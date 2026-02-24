@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Notefy</title>
+</head>
+
+<body>
+    <h1>Notefy</h1>
+
+    <h3>Filter by Genre</h3>
+    <div id="genre-filters"></div>
+
+    <h3>Filter by Difficulty</h3>
+    <label><input type="checkbox" class="difficulty-filter" value="beginner"> Beginner</label>
+    <label><input type="checkbox" class="difficulty-filter" value="intermediate"> Intermediate</label>
+    <label><input type="checkbox" class="difficulty-filter" value="advanced"> Advanced</label>
+
+    <h3>Songs</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Genre</th>
+                <th>Key</th>
+                <th>Difficulty</th>
+                <th>Year</th>
+            </tr>
+        </thead>
+        <tbody id="songs-table"></tbody>
+    </table>
+
+    <script>
+        let selectedGenres = [];
+        let selectedDifficulties = [];
+
+        async function loadGenres() {
+            const res = await fetch("http://127.0.0.1:8000/genres");
+            const genres = await res.json();
+            const container = document.getElementById("genre-filters");
+            genres.forEach(genre => {
+                const label = document.createElement("label");
+                label.innerHTML = `<input type="checkbox" value="${genre.Genre_ID}"> ${genre.Name} `;
+                label.querySelector("input").addEventListener("change", (e) => {
+                    if (e.target.checked) {
+                        selectedGenres.push(genre.Genre_ID);
+                    } else {
+                        selectedGenres = selectedGenres.filter(id => id !== genre.Genre_ID);
+                    }
+                    loadSongs();
+                });
+                container.appendChild(label);
+            });
+        }
+
+        async function loadSongs() {
+            let url = "http://127.0.0.1:8000/songs/filter?";
+            if (selectedGenres.length > 0) url += `genre_ids=${selectedGenres.join(",")}&`;
+            if (selectedDifficulties.length > 0) url += `difficulties=${selectedDifficulties.join(",")}&`;
+
+            const res = await fetch(url);
+            const songs = await res.json();
+            const tbody = document.getElementById("songs-table");
+            tbody.innerHTML = "";
+            songs.forEach(song => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${song.Title}</td>
+                        <td>${song.Artist}</td>
+                        <td>${song.Genre_ID}</td>
+                        <td>${song.original_key}</td>
+                        <td>${song.difficulty}</td>
+                        <td>${song.year}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        document.querySelectorAll(".difficulty-filter").forEach(cb => {
+            cb.addEventListener("change", (e) => {
+                if (e.target.checked) {
+                    selectedDifficulties.push(e.target.value);
+                } else {
+                    selectedDifficulties = selectedDifficulties.filter(d => d !== e.target.value);
+                }
+                loadSongs();
+            });
+        });
+
+        loadGenres();
+        loadSongs();
+    </script>
+</body>
+
+</html>
