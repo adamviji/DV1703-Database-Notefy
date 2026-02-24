@@ -42,7 +42,7 @@ def data_songs(conn):
         ("Take me home Country Roads", "John Denver", 4, "G", "Beginner", 1971),
         ("Autumn Leaves", "Nat King Cole", 3, "Am", "Intermediate", 1945),
         ("Fallin", "Alicia Keys", 5, "E minor", "Intermediate", 2001),
-        ("Snow(Hey oh!)", "Red Hot Chilli Peppers", 5, "G# minor", "Advanced", 2001)
+        ("Snow(Hey oh!)", "Red Hot Chilli Peppers", 1, "G# minor", "Advanced", 2001)
     ]
     cursor.executemany(
         """

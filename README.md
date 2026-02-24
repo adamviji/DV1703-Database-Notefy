@@ -11,4 +11,4 @@ Johan Granli Larsson & Adam Visanji
 2026-02-23 Fixed data and setup_dp to get it working A.V
 2026-02-23 created testdate for songs J.G.L
 2026-02-24 Fixed issue of duplicates in Songs by adding artist and making title+artist combo UNIQUE. First function made to get all songs.
-
+2026-02-24 Created api-endpoints for songs and filtered songs by genre/difficulty and created the function get_filtered_genre_difficulty J.G.L
