@@ -15,3 +15,12 @@ def get_connection():
         password=os.getenv("DB_PASSWORD"),
         database=DB_NAME,
     )
+
+def get_all_songs():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM Song")
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result

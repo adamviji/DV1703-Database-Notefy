@@ -10,3 +10,5 @@ Johan Granli Larsson & Adam Visanji
 2026-02-23 Moved get_connection to database file and imported into data and setup_db A.V
 2026-02-23 Fixed data and setup_dp to get it working A.V
 2026-02-23 created testdate for songs J.G.L
+2026-02-24 Fixed issue of duplicates in Songs by adding artist and making title+artist combo UNIQUE. First function made to get all songs.
+
