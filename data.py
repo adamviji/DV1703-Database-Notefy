@@ -1,15 +1,19 @@
 import os
+import csv
 from dotenv import load_dotenv
 from src.database import get_connection
 
 def data_genres(conn):
     cursor = conn.cursor()
     genres = [
-        ("Rock", "a high-energy, amplified sound centered on the electric guitar, bass guitar, and drums, typically featuring a 4/4 time signature with a strong,, backbeat-driven rhythm"),
+        ("Classic Rock", "A high-energy, amplified sound centered on the electric guitar, bass guitar, and drums, typically featuring a 4/4 time signature with a strong,, backbeat-driven rhythm"),
         ("Pop", "Mainstream music made for a broad audience"),
         ("Jazz", "Jazz is a 20th-century American musical art form originating in New Orleans, characterized by improvisation, syncopated rhythms, swing notes, and complex harmonies"),
         ("Country", "American folk music"),
-        ("RmB", "Rhymes and beats usually slow paced")
+        ("R&B", "Rhymes and beats usually slow paced"),
+        ("Indie", " Indie music is a genre rooted in independent production, known for its creative freedom, authentic style, and often guitar-driven, introspective sound. "),
+        ("Hard Rock", " A subgenre of rock music characterized by heavy guitar riffs, strong rhythms, powerful vocals, and a high-energy, aggressive sound. "),
+        ("Metal", " a heavy and intense genre of rock music defined by distorted guitars, powerful drumming, aggressive vocals, and a dark, high-energy sound. ")
     ]
     cursor.executemany(
         "INSERT IGNORE INTO Genre(Name, Description) VALUES (%s, %s)", genres
@@ -55,12 +59,39 @@ def data_songs(conn):
     cursor.close()
     print("Songs added")
 
+def import_songs_from_csv(conn, filepath):
+    cursor = conn.cursor(dictionary=True)
+    with open(filepath, newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            #Hämta Genre_ID baserat på genre-namn
+            cursor.execute(
+                "SELECT Genre_ID FROM Genre WHERE Name = %s", (row['Genre'],))
+            genre = cursor.fetchone()
 
+            if genre:
+                genre_id = genre['Genre_ID']
+            else:
+                print(f"Genre '{row['Genre']}' was not found, skipping {row['Title']}")
+                continue
+            
+            cursor.execute(
+                """
+                INSERT IGNORE INTO Song (Title, Artist, Genre_ID, original_key, difficulty, year)
+                VALUES (%s, %s, %s, %s, %s, %s)
+                """,
+                (row['Title'], row['Artist'], genre_id, row['Key'], row['Difficulty'], row['Year'])
+            )
+
+        conn.commit()
+        cursor.close()
+        print("CSV imported!")
 
 if __name__ == "__main__":
     conn = get_connection()
     data_genres(conn)
     data_chords(conn)
     data_songs(conn)
+    import_songs_from_csv(conn, "songs_200.csv")
     conn.close()
     print("Data Added!")
