@@ -13,5 +13,5 @@ Johan Granli Larsson & Adam Visanji
 2026-02-24 Fixed issue of duplicates in Songs by adding artist and making title+artist combo UNIQUE. First function made to get all songs.
 2026-02-24 Created api-endpoints for songs and filtered songs by genre/difficulty and created the function get_filtered_genre_difficulty J.G.L
 2024-02-24 Got HTML index working and filter by boxes to mark. made some changes to api endpoint and filter function. 
-2024-02-27 Generated a list of songs to a csv file and imported it to our songs table throuh a new p-function where we match genre name and get the genre id to get the propper information to Songs"
+2024-02-27 Generated a list of songs to a csv file and imported it to our songs table throuh a new p-function where we match genre name and get the genre id to get the propper information to Songs" A.V
 #TODO Add all Chords to chords table, add more genres ea. Punk and correct those songs in csv file
