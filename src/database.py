@@ -34,6 +34,23 @@ def get_all_genres():
     conn.close()
     return result
 
+def get_all_artists():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT Artist FROM Song")
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
+
+def get_all_titles():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT Title from Song")
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
 
 # EX SELECT * FROM Song WHERE 1=1 AND Genre_ID IN (1, 3) AND difficulty IN ('beginner', 'intermediate')
 def get_filtered_genre_difficulty(genre_ID = None, difficulty = None):
