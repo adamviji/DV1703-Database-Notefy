@@ -15,7 +15,7 @@ from src.database import (
 )
 
 
-
+# pip install -r requirements.txt
 # to run 
 # uvicorn src.main:app --reload
 app = FastAPI()
