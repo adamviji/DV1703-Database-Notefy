@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Notefy - Profile</title>
+</head>
+
+<body>
+    <nav>
+        <a href="index.html">Songs</a> |
+        <a href="artists.html">Artists</a> |
+        <a href="login.html">Login</a> |
+        <a href="profile.html">Profile</a>
+    </nav>
+
+    <div id="not-logged-in" style="display:none;">
+        <h2>You need to be logged in to view this page</h2>
+        <a href="login.html">Login here</a>
+    </div>
+
+    <div id="profile-content" style="display:none;">
+        <h1>Welcome, <span id="profile-username"></span>!</h1>
+
+        <h2>Your Favorites</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Artist</th>
+                    <th>Key</th>
+                    <th>Difficulty</th>
+                    <th>Year</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody id="favorites-table"></tbody>
+        </table>
+    </div>
+
+    <script>
+        const user_id = localStorage.getItem("user_id");
+        const username = localStorage.getItem("username");
+
+        if (!user_id) {
+            document.getElementById("not-logged-in").style.display = "block";
+        } else {
+            document.getElementById("profile-content").style.display = "block";
+            document.getElementById("profile-username").textContent = username;
+            loadFavorites();
+        }
+
+        async function loadFavorites() {
+            const res = await fetch(`http://127.0.0.1:8000/favorites/${user_id}`);
+            const songs = await res.json();
+            const tbody = document.getElementById("favorites-table");
+            tbody.innerHTML = "";
+
+            if (songs.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='6'>No favorites yet</td></tr>";
+                return;
+            }
+
+            songs.forEach(song => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${song.Title}</td>
+                        <td>${song.Artist}</td>
+                        <td>${song.original_key}</td>
+                        <td>${song.difficulty}</td>
+                        <td>${song.year}</td>
+                        <td><button onclick="removeFavorite(${song.Song_ID})">Remove</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function removeFavorite(song_id) {
+            await fetch("http://127.0.0.1:8000/favorites", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: parseInt(user_id), song_id: song_id })
+            });
+            loadFavorites();
+        }
+    </script>
+</body>
+
+</html>

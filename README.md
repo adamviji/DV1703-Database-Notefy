@@ -42,4 +42,6 @@ works after some trouble with missmatching passlib and bcrypt A.V
 
 2026-03-04 Created 3 functions for handling user favorites and created 3 api endpoints for the website using one join function to get one specific users favorites J.G.L
 
+2026-03-04 Did some fixing up and created buttons to add/remove favorites, had some error handeling to implement and fix but all up and running in the end. A.V
+
 #TODO Add all Chords to chords table, add more genres ea. Punk and correct those songs in csv file

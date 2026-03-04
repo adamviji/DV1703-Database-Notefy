@@ -36,7 +36,7 @@ def get_user(username):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM User WHERE Username = %s", (username,))
-    result = cursor.fetchall()
+    result = cursor.fetchone()
     cursor.close()
     conn.close()
     return result
@@ -48,7 +48,7 @@ def add_favourites(user_id, song_id):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
-        """INSERT IGNORE INTO UserFavorite (User_ID, Song_ID)
+        """INSERT IGNORE INTO UserFavorites (User_ID, Song_ID)
         VALUES(%s, %s)
         """,
         (user_id, song_id)
@@ -61,7 +61,7 @@ def remove_favourites(user_id, song_id):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "DELETE FROM UserFavorite WHERE User_ID = %s AND Song_ID = %s",
+        "DELETE FROM UserFavorites WHERE User_ID = %s AND Song_ID = %s",
         (user_id, song_id)
     )
     conn.commit()
@@ -73,11 +73,12 @@ def get_user_favorites(user_id):
     cursor = conn.cursor(dictionary=True)
     cursor.execute(
         """
-        SELECT Song.* FROM Song
-        JOIN UserInterface On Song_ID = UserFavourite.Song_ID
-        WHERE UserFavorite.User_ID = %s
+        SELECT Song.Song_ID, Song.Title, Song.Artist, Song.original_key, Song.difficulty, Song.year 
+        FROM Song
+        JOIN UserFavorites On Song.Song_ID = UserFavorites.Song_ID
+        WHERE UserFavorites.User_ID = %s
         """,
-        (user_id,)
+        (user_id,),
     )
     result = cursor.fetchall()
     cursor.close()

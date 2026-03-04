@@ -80,23 +80,37 @@ def register(user: UserRegister):
 
 @app.post("/login")
 def login(user: UserLogin):
-    db_user = get_user(user.username)
-    if not db_user or not verify_password(user.password, db_user["password_hash"]):
-        raise HTTPException(status_code=401, detail="Invalid username or password")
-    return {"message": "Login successful", "user_id": db_user["User_ID"]}
+    try:
+        db_user = get_user(user.username)
+        if not db_user or not verify_password(user.password, db_user["password_hash"]):
+            raise HTTPException(status_code=401, detail="Invalid username or password")
+        return {"message": "Login successful", "user_id": db_user["User_ID"]}
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Login error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 #Favorites
 
 @app.post("/favorites")
 def add_favorite_ep(req: FavoriteRequest):
-    add_favourites(req.user_id, req.song_id)
-    return{"message": "Favorite added"}
+    try:
+        add_favourites(req.user_id, req.song_id)
+        return {"message": "Favorite added"}
+    except Exception as e:
+        print(f"Favorite error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/favorites")
 def remove_favorite_ep(req: FavoriteRequest):
     remove_favourites(req.user_id, req.song_id)
     return{"message": "Favorite removed"}
 
-@app.get("/favorites{user_id}")
-def get_favorite_ep(user_id: int):
-    return get_user_favorites(user_id)
+@app.get("/favorites/{user_id}")
+def get_favorites_endpoint(user_id: int):
+    try:
+        return get_user_favorites(user_id)
+    except Exception as e:
+        print(f"Get favorites error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

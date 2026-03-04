@@ -6,14 +6,13 @@
     <title>Notefy</title>
 </head>
 
-
-
 <body>
     <nav>
         <a href="index.html">Songs</a> |
-        <a href="artists.html">Artists</a>
-        <a href="login.html">Login</a>
+        <a href="artists.html">Artists</a> |
+        <span id="nav-login"></span>
     </nav>
+
     <h1>Notefy</h1>
 
     <h3>Filter by Genre</h3>
@@ -34,12 +33,31 @@
                 <th>Key</th>
                 <th>Difficulty</th>
                 <th>Year</th>
+                <th id="fav-header"></th>
             </tr>
         </thead>
         <tbody id="songs-table"></tbody>
     </table>
 
     <script>
+        const user_id = localStorage.getItem("user_id");
+        const username = localStorage.getItem("username");
+
+        // Navbar
+        if (user_id) {
+            document.getElementById("nav-login").innerHTML =
+                `Logged in as <b>${username}</b> | <a href="profile.html">Profile</a> | <a href="#" onclick="logout()">Logout</a>`;
+            document.getElementById("fav-header").textContent = "Favorite";
+        } else {
+            document.getElementById("nav-login").innerHTML = `<a href="login.html">Login</a>`;
+        }
+
+        function logout() {
+            localStorage.removeItem("user_id");
+            localStorage.removeItem("username");
+            window.location.href = "login.html";
+        }
+
         let selectedGenres = [];
         let selectedDifficulties = [];
 
@@ -72,6 +90,9 @@
             const tbody = document.getElementById("songs-table");
             tbody.innerHTML = "";
             songs.forEach(song => {
+                const favoriteBtn = user_id
+                    ? `<button onclick="addFavorite(${song.Song_ID})">★ Add</button>`
+                    : "";
                 tbody.innerHTML += `
                     <tr>
                         <td>${song.Title}</td>
@@ -80,12 +101,21 @@
                         <td>${song.original_key}</td>
                         <td>${song.difficulty}</td>
                         <td>${song.year}</td>
+                        <td>${favoriteBtn}</td>
                     </tr>
                 `;
             });
         }
-        async function loadArtists() {
-            
+
+        async function addFavorite(song_id) {
+            const res = await fetch("http://127.0.0.1:8000/favorites", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: parseInt(user_id), song_id: song_id })
+            });
+            if (res.ok) {
+                alert("Added to favorites!");
+            }
         }
 
         document.querySelectorAll(".difficulty-filter").forEach(cb => {
