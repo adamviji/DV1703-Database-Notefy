@@ -25,12 +25,12 @@ def data_genres(conn):
 def data_chords(conn):
     cursor = conn.cursor()
     chords = [
-        ("C",), ("D",), ("E",), ("F",), ("G",), ("A"), ("B"), #majors
-        ("Cm"), ("Dm"), ("Em",), ("Fm",), ("Gm",), ("Am"), ("Bm"), #minors
-        ("C#"), ("D#"), ("E#",), ("F#",), ("G#",), ("A#"), ("B#"), #Sharp major
-        ("C#m"), ("D#m"), ("E#m",), ("F#m",), ("G#m",), ("A#m"), ("B#m"), #Sharp minor
-        ("Cb"), ("Db",), ("Eb",), ("Fb",), ("Gb",), ("Ab"), ("Bb"), #Flat major
-        ("Cbm"), ("Dbm",), ("Ebm",), ("Fbm",), ("Gbm",), ("Abm"), ("Bbm") #Flat minor
+        ("C",), ("D",), ("E",), ("F",), ("G",), ("A",), ("B",), #majors
+        ("Cm",), ("Dm",), ("Em",), ("Fm",), ("Gm",), ("Am",), ("Bm",), #minors
+        ("C#",), ("D#",), ("E#",), ("F#",), ("G#",), ("A#",), ("B#",), #Sharp major
+        ("C#m",), ("D#m",), ("E#m",), ("F#m",), ("G#m",), ("A#m",), ("B#m",), #Sharp minor
+        ("Cb",), ("Db",), ("Eb",), ("Fb",), ("Gb",), ("Ab",), ("Bb",), #Flat major
+        ("Cbm",), ("Dbm",), ("Ebm",), ("Fbm",), ("Gbm",), ("Abm",), ("Bbm",) #Flat minor
     ]
     cursor.executemany(
         "INSERT IGNORE INTO Chord (Name) VALUES (%s)", chords
@@ -43,14 +43,14 @@ def data_chords(conn):
 def data_songs(conn):
     cursor = conn.cursor()
     songs = [
-        ("Paranoid", "Black Sabbath", 1, "E Minor", "Intermediate", 1970),
-        ("Smoke on the Water", "Deep Purple", 1, "G Minor", "Beginner", 1973),
+        ("Paranoid", "Black Sabbath", 1, "Em", "Intermediate", 1970),
+        ("Smoke on the Water", "Deep Purple", 1, "Gm", "Beginner", 1973),
         ("Eye of the tiger", "Survivor", 1, "C", "Beginner", 1982),
         ("Let her go", "Passenger", 2, "G", "Beginner", 2012),
         ("Take me home Country Roads", "John Denver", 4, "G", "Beginner", 1971),
         ("Autumn Leaves", "Nat King Cole", 3, "Am", "Intermediate", 1945),
         ("Fallin", "Alicia Keys", 5, "E minor", "Intermediate", 2001),
-        ("Snow(Hey oh!)", "Red Hot Chilli Peppers", 1, "G# Minor", "Advanced", 2006)
+        ("Snow(Hey oh!)", "Red Hot Chilli Peppers", 1, "G#m", "Advanced", 2006)
     ]
     cursor.executemany(
         """
