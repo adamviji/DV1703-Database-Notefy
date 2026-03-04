@@ -28,8 +28,8 @@ def data_chords(conn):
         ("C",), ("D",), ("E",), ("F",), ("G",), ("A"), ("B"), #majors
         ("Cm"), ("Dm"), ("Em",), ("Fm",), ("Gm",), ("Am"), ("Bm"), #minors
         ("C#"), ("D#"), ("E#",), ("F#",), ("G#",), ("A#"), ("B#"), #Sharp major
-        ("C#m"), ("D#m"), ("E#m",), ("F#m",), ("G#m",), ("A#m"), ("B#m") #Sharp minor
-        ("Cb"), ("Db",), ("Eb",), ("Fb",), ("Gb",), ("Ab"), ("Bb") #Flat major
+        ("C#m"), ("D#m"), ("E#m",), ("F#m",), ("G#m",), ("A#m"), ("B#m"), #Sharp minor
+        ("Cb"), ("Db",), ("Eb",), ("Fb",), ("Gb",), ("Ab"), ("Bb"), #Flat major
         ("Cbm"), ("Dbm",), ("Ebm",), ("Fbm",), ("Gbm",), ("Abm"), ("Bbm") #Flat minor
     ]
     cursor.executemany(
