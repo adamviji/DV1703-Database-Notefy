@@ -61,7 +61,7 @@ def init_schema(conn) -> None:
         Artist VARCHAR(255), 
         Genre_ID INT,
         original_key VARCHAR(255),
-        difficulty ENUM('beginner', 'intermediate', 'advanced') NOT NULL,
+        difficulty ENUM('Beginner', 'Intermediate', 'Advanced') NOT NULL,
         year INT,
         UNIQUE (Title, Artist),
         FOREIGN KEY (Genre_ID) REFERENCES Genre(Genre_ID)
