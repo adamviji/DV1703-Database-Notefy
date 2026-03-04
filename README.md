@@ -36,5 +36,6 @@ Johan Granli Larsson & Adam Visanji
 https://www.youtube.com/watch?v=ac4p2jelZdk
 works after some trouble with missmatching passlib and bcrypt A.V
 
+2026-03-04 Updated CSV file to match our new chords. J.G.L 
 
 #TODO Add all Chords to chords table, add more genres ea. Punk and correct those songs in csv file
