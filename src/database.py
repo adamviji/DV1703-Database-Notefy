@@ -37,7 +37,16 @@ def get_all_genres():
 def get_all_artists():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT Artist FROM Song")
+    cursor.execute("SELECT DISTINCT Artist FROM Song ORDER BY Artist")
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
+
+def get_songs_by_artists(artist):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM Song WHERE Artist = %s", (artist,))
     result = cursor.fetchall()
     cursor.close()
     conn.close()

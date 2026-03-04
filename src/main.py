@@ -1,5 +1,12 @@
 from fastapi import FastAPI
-from src.database import get_all_songs, get_filtered_genre_difficulty, get_all_genres, get_all_artists, get_all_titles
+from src.database import (
+    get_all_songs,
+    get_filtered_genre_difficulty,
+    get_all_genres,
+    get_all_artists,
+    get_all_titles,
+    get_songs_by_artists,
+)
 from fastapi.staticfiles import StaticFiles
 
 
@@ -28,6 +35,10 @@ def get_artist():
 @app.get("/titles")
 def get_titles():
     return get_all_titles()
+
+@app.get("/artists/{artist}/songs")
+def get_artist_songs(artist: str):
+    return get_songs_by_artists(artist)
 
 @app.get("/songs/filter")
 def filter_songs(genre_ids: str = None, difficulties: str = None):

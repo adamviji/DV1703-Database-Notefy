@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Notefy - Artists</title>
+</head>
+
+<body>
+    <nav>
+        <a href="index.html">Songs</a> |
+        <a href="artists.html">Artists</a>
+    </nav>
+
+    <h1>Artists</h1>
+
+    <div id="artist-list"></div>
+
+    <div id="artist-songs" style="display:none;">
+        <h2 id="artist-name"></h2>
+        <button onclick="goBack()">← Back to Artists</button>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Genre</th>
+                    <th>Key</th>
+                    <th>Difficulty</th>
+                    <th>Year</th>
+                </tr>
+            </thead>
+            <tbody id="songs-table"></tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadArtists() {
+            const res = await fetch("http://127.0.0.1:8000/artists");
+            const artists = await res.json();
+            const container = document.getElementById("artist-list");
+            artists.forEach(artist => {
+                const div = document.createElement("div");
+                div.innerHTML = `<a href="#" onclick="loadArtistSongs('${artist.Artist}')">${artist.Artist}</a>`;
+                container.appendChild(div);
+            });
+        }
+
+        async function loadArtistSongs(artist) {
+            const res = await fetch(`http://127.0.0.1:8000/artists/${encodeURIComponent(artist)}/songs`);
+            const songs = await res.json();
+
+            document.getElementById("artist-list").style.display = "none";
+            document.getElementById("artist-songs").style.display = "block";
+            document.getElementById("artist-name").textContent = artist;
+
+            const tbody = document.getElementById("songs-table");
+            tbody.innerHTML = "";
+            songs.forEach(song => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${song.Title}</td>
+                        <td>${song.Genre_ID}</td>
+                        <td>${song.original_key}</td>
+                        <td>${song.difficulty}</td>
+                        <td>${song.year}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function goBack() {
+            document.getElementById("artist-songs").style.display = "none";
+            document.getElementById("artist-list").style.display = "block";
+        }
+
+        loadArtists();
+    </script>
+</body>
+
+</html>
