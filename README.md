@@ -16,6 +16,7 @@ Johan Granli Larsson & Adam Visanji
 2026-02-27 Generated a list of songs to a csv file and imported it to our songs table throuh a new p-function where we match genre name and get the genre id to get the propper information to Songs" A.V
 2026-03-02 Created 2 new functions for filtering only artists and titles. Also set up 2 endpoints in main. Also created one file (api.http) to be able to test our api with needing a website.
 2026-03-04 artists and html added, going to start working on Users and loggin. A.V
+2026-03-04 Changed all chords to look better and more accurate.
 
 
 
