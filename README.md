@@ -38,4 +38,8 @@ works after some trouble with missmatching passlib and bcrypt A.V
 
 2026-03-04 Updated CSV file to match our new chords. J.G.L 
 
+2026-03-04 added dummy users to test our database. and be able to create user favourite. J.G.L
+
+2026-03-04 Created 3 functions for handling user favorites and created 3 api endpoints for the website using one join function to get one specific users favorites J.G.L
+
 #TODO Add all Chords to chords table, add more genres ea. Punk and correct those songs in csv file

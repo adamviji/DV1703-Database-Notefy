@@ -44,6 +44,46 @@ def get_user(username):
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
+def add_favourites(user_id, song_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        """INSERT IGNORE INTO UserFavorite (User_ID, Song_ID)
+        VALUES(%s, %s)
+        """,
+        (user_id, song_id)
+    )
+    conn.commit()
+    cursor.close
+    conn.close()
+
+def remove_favourites(user_id, song_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "DELETE FROM UserFavorite WHERE User_ID = %s AND Song_ID = %s",
+        (user_id, song_id)
+    )
+    conn.commit()
+    cursor.close
+    conn.close()
+
+def get_user_favorites(user_id):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(
+        """
+        SELECT Song.* FROM Song
+        JOIN UserInterface On Song_ID = UserFavourite.Song_ID
+        WHERE UserFavorite.User_ID = %s
+        """,
+        (user_id,)
+    )
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
+
 
 def get_all_songs():
     conn = get_connection()

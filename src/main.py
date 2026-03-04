@@ -11,7 +11,10 @@ from src.database import (
     get_songs_by_artists,
     create_user,
     get_user,
-    verify_password
+    verify_password,
+    add_favourites,
+    remove_favourites,
+    get_user_favorites
 )
 
 
@@ -63,6 +66,10 @@ class UserLogin(BaseModel):
     username: str
     password: str
 
+class FavoriteRequest(BaseModel):
+    user_id: int
+    song_id: int
+
 @app.post("/register")
 def register(user: UserRegister):
     existing = get_user(user.username)
@@ -77,3 +84,19 @@ def login(user: UserLogin):
     if not db_user or not verify_password(user.password, db_user["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid username or password")
     return {"message": "Login successful", "user_id": db_user["User_ID"]}
+
+#Favorites
+
+@app.post("/favorites")
+def add_favorite_ep(req: FavoriteRequest):
+    add_favourites(req.user_id, req.song_id)
+    return{"message": "Favorite added"}
+
+@app.delete("/favorites")
+def remove_favorite_ep(req: FavoriteRequest):
+    remove_favourites(req.user_id, req.song_id)
+    return{"message": "Favorite removed"}
+
+@app.get("/favorites{user_id}")
+def get_favorite_ep(user_id: int):
+    return get_user_favorites(user_id)

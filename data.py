@@ -1,7 +1,7 @@
 import os
 import csv
 from dotenv import load_dotenv
-from src.database import get_connection
+from src.database import get_connection, pwd_context
 
 def data_genres(conn):
     cursor = conn.cursor()
@@ -63,6 +63,26 @@ def data_songs(conn):
     cursor.close()
     print("Songs added")
 
+def data_users(conn):
+    cursor = conn.cursor()
+    users = [
+        ("Adam", "Adam@mail.com", pwd_context.hash("password123")),
+        ("Johan", "Johan@mail.com", pwd_context.hash("password123")),
+        ("Gusav", "Gustav@mail.com", pwd_context.hash("password123")),
+        ("Emil", "Emil@mail.com", pwd_context.hash("password123")),
+        ("Ludvig", "Ludvig@mail.com", pwd_context.hash("password123")),
+    ]
+    cursor.executemany(
+        """
+        INSERT IGNORE INTO User (username, Email, password_hash)
+        VALUES(%s, %s, %s)
+        """,
+        users
+    )
+    conn.commit()
+    cursor.close()
+    print("Users added")
+
 def import_songs_from_csv(conn, filepath):
     cursor = conn.cursor(dictionary=True)
     with open(filepath, newline='', encoding='utf-8') as csvfile:
@@ -96,6 +116,7 @@ if __name__ == "__main__":
     data_genres(conn)
     data_chords(conn)
     data_songs(conn)
+    data_users(conn)
     import_songs_from_csv(conn, "songs_200.csv")
     conn.close()
     print("Data Added!")
