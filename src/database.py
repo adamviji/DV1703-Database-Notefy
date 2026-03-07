@@ -95,6 +95,38 @@ def get_all_songs():
     conn.close()
     return result
 
+def get_genre_with_songs():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(
+    """SELECT s.Song_ID, s.Title, s.Artist,
+    s.Name AS Genre, s.original_key, s.difficulty, s.year 
+    FROM Song s
+    JOIN Genre On s.Genre_ID = Genre.Genre_ID
+    """)
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
+
+def get_favorite_song_counter():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(
+    """
+    SELECT s.Title, s.Artist, Count(UserFavorite.Song_ID) 
+    AS counter_favorites
+    FROM Song s
+    LEFT JOIN UserFavorites ON s.Song_ID = UserFavorites.Song_ID
+    GROUP BY s.SongID, s.Title, s.Artist, s.difficulty
+    ORDER BY counter_favorites DESC
+    """
+    )
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
+
 def get_all_genres():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)

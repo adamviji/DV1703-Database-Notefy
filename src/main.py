@@ -14,7 +14,9 @@ from src.database import (
     verify_password,
     add_favourites,
     remove_favourites,
-    get_user_favorites
+    get_user_favorites,
+    get_favorite_song_counter,
+    get_genre_with_songs
 )
 
 
@@ -114,3 +116,11 @@ def get_favorites_endpoint(user_id: int):
     except Exception as e:
         print(f"Get favorites error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/songs/counted_favorites")
+def counted_faves():
+    return get_favorite_song_counter()
+
+@app.get("/songs/complete_tables")
+def replaced_with_genre():
+    return get_genre_with_songs()
