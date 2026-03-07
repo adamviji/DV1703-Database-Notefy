@@ -44,4 +44,6 @@ works after some trouble with missmatching passlib and bcrypt A.V
 
 2026-03-04 Did some fixing up and created buttons to add/remove favorites, had some error handeling to implement and fix but all up and running in the end. A.V
 
+2026-03-07 html fixes and created a procedure to search on title or artist A.V
+
 #TODO Add all Chords to chords table, add more genres ea. Punk and correct those songs in csv file
