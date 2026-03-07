@@ -95,16 +95,54 @@ def get_all_songs():
     conn.close()
     return result
 
-def get_genre_with_songs():
+# Edited like get_filtered_genre_difficulty to handle filters
+def get_genre_with_songs(genre_ID=None, difficulty=None):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute(
-        """SELECT s.Song_ID, s.Title, s.Artist,
+    query = """
+        SELECT s.Song_ID, s.Title, s.Artist,
         Genre.Name AS Genre, s.original_key, s.difficulty, s.year 
         FROM Song s
         JOIN Genre On s.Genre_ID = Genre.Genre_ID
+        WHERE 1=1
         """
-    )
+    params = []
+
+    if genre_ID:
+        placeholders = ", ".join(["%s"] * len(genre_ID))
+        query += f" AND s.Genre_ID IN ({placeholders})"
+        params.extend(genre_ID)
+
+    if difficulty:
+        placeholders = ", ".join(["%s"] * len(difficulty))
+        query += f" AND difficulty IN ({placeholders})"
+        params.extend(difficulty)
+
+    cursor.execute(query, params if params else None)
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
+
+# EX SELECT * FROM Song WHERE 1=1 AND Genre_ID IN (1, 3) AND difficulty IN ('beginner', 'intermediate')
+def get_filtered_genre_difficulty(genre_ID=None, difficulty=None):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    query = "SELECT * FROM Song WHERE 1=1"
+    params = []
+
+    if genre_ID:
+        placeholders = ", ".join(["%s"] * len(genre_ID))
+        query += f" AND Genre_ID IN ({placeholders})"
+        params.extend(genre_ID)
+
+    if difficulty:
+        placeholders = ", ".join(["%s"] * len(difficulty))
+        query += f" AND difficulty IN ({placeholders})"
+        params.extend(difficulty)
+
+    cursor.execute(query, params if params else None)
     result = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -164,29 +202,7 @@ def get_all_titles():
     conn.close()
     return result
 
-# EX SELECT * FROM Song WHERE 1=1 AND Genre_ID IN (1, 3) AND difficulty IN ('beginner', 'intermediate')
-def get_filtered_genre_difficulty(genre_ID = None, difficulty = None):
-    conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
 
-    query = "SELECT * FROM Song WHERE 1=1"
-    params = []
-
-    if genre_ID:
-        placeholders = ", ".join(["%s"] * len(genre_ID))
-        query += f" AND Genre_ID IN ({placeholders})"
-        params.extend(genre_ID)
-
-    if difficulty:
-        placeholders = ", ".join(["%s"] * len(difficulty))
-        query += f" AND difficulty IN ({placeholders})"
-        params.extend(difficulty)
-
-    cursor.execute(query, params if params else None)
-    result = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return result
 
 def call_search(searchTerm):
     conn = get_connection()

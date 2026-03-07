@@ -54,10 +54,24 @@ def get_artist_songs(artist: str):
 
 @app.get("/songs/filter")
 def filter_songs(genre_ids: str = None, difficulties: str = None):
-    genre_list = [int(g) for g in genre_ids.split(",")] if genre_ids else None
-    difficulty_list = difficulties.split(",") if difficulties else None
-    return get_filtered_genre_difficulty(genre_list, difficulty_list)
+    try:
+        genre_list = [int(g) for g in genre_ids.split(",")] if genre_ids else None
+        difficulty_list = difficulties.split(",") if difficulties else None
+        return get_filtered_genre_difficulty(genre_list, difficulty_list)
+    except Exception as e:
+        print(f"Error:{e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
+# Replaces /song/filter
+@app.get("/songs/complete_tables")
+def replaced_with_genre(genre_ids: str = None, difficulties: str = None):
+    try:
+        genre_list = [int(g) for g in genre_ids.split(",")] if genre_ids else None
+        difficulty_list = difficulties.split(",") if difficulties else None
+        return get_genre_with_songs(genre_ID=genre_list, difficulty=difficulty_list)
+    except Exception as e:
+        print(f"Error:{e}")
+        raise HTTPException(status_code=500, detail=str(e))
 #User reg and login
 
 class UserRegister(BaseModel):
@@ -122,9 +136,6 @@ def get_favorites_endpoint(user_id: int):
 def counted_faves():
     return get_favorite_song_counter()
 
-@app.get("/songs/complete_tables")
-def replaced_with_genre():
-    return get_genre_with_songs()
 
 @app.get("/search")
 def search_ep(q: str):
