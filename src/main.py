@@ -16,7 +16,8 @@ from src.database import (
     remove_favourites,
     get_user_favorites,
     get_favorite_song_counter,
-    get_genre_with_songs
+    get_genre_with_songs,
+    call_search
 )
 
 
@@ -124,3 +125,7 @@ def counted_faves():
 @app.get("/songs/complete_tables")
 def replaced_with_genre():
     return get_genre_with_songs()
+
+@app.get("/search")
+def search_ep(q: str):
+    return call_search(q)

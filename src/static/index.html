@@ -7,11 +7,13 @@
 </head>
 
 <body>
-    <nav>
-        <a href="index.html">Songs</a> |
-        <a href="artists.html">Artists</a> |
-        <span id="nav-login"></span>
-    </nav>
+<nav>
+    <a href="index.html">Songs</a> |
+    <a href="artists.html">Artists</a> |
+    <input type="text" id="search-input" placeholder="Search songs or artists...">
+    <button onclick="search()">Search</button> |
+    <span id="nav-login"></span>
+</nav>
 
     <h1>Notefy</h1>
 
@@ -80,32 +82,42 @@
             });
         }
 
-        async function loadSongs() {
-            let url = "http://127.0.0.1:8000/songs/filter?";
-            if (selectedGenres.length > 0) url += `genre_ids=${selectedGenres.join(",")}&`;
-            if (selectedDifficulties.length > 0) url += `difficulties=${selectedDifficulties.join(",")}&`;
+    async function loadSongs() {
+        let url = "http://127.0.0.1:8000/songs/complete_tables?";
+        if (selectedGenres.length > 0) url += `genre_ids=${selectedGenres.join(",")}&`;
+        if (selectedDifficulties.length > 0) url += `difficulties=${selectedDifficulties.join(",")}&`;
 
-            const res = await fetch(url);
-            const songs = await res.json();
-            const tbody = document.getElementById("songs-table");
-            tbody.innerHTML = "";
-            songs.forEach(song => {
-                const favoriteBtn = user_id
-                    ? `<button onclick="addFavorite(${song.Song_ID})">★ Add</button>`
-                    : "";
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${song.Title}</td>
-                        <td>${song.Artist}</td>
-                        <td>${song.Genre_ID}</td>
-                        <td>${song.original_key}</td>
-                        <td>${song.difficulty}</td>
-                        <td>${song.year}</td>
-                        <td>${favoriteBtn}</td>
-                    </tr>
-                `;
-            });
+        const res = await fetch(url);
+        const songs = await res.json();
+        const tbody = document.getElementById("songs-table");
+        tbody.innerHTML = "";
+        songs.forEach(song => {
+            const favoriteBtn = user_id
+                ? `<button onclick="addFavorite(${song.Song_ID})">★ Add</button>`
+                : "";
+            tbody.innerHTML += `
+            <tr>
+                <td>${song.Title}</td>
+                <td>${song.Artist}</td>
+                <td>${song.Genre}</td>
+                <td>${song.original_key}</td>
+                <td>${song.difficulty}</td>
+                <td>${song.year}</td>
+                <td>${favoriteBtn}</td>
+            </tr>
+        `;
+        });
+    }
+
+        async function search() {
+            const term = document.getElementById("search-input").value;
+            if (!term) return;
+            window.location.href = `search.html?q=${encodeURIComponent(term)}`;
         }
+
+        document.getElementById("search-input").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") search();
+        });
 
         async function addFavorite(song_id) {
             const res = await fetch("http://127.0.0.1:8000/favorites", {

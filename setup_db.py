@@ -95,9 +95,29 @@ def init_schema(conn) -> None:
     print("Table är skapade!")
 
 
+def create_procedures(conn):
+    cursor = conn.cursor()
+    # Creating a search procedure for both songs and artist with keyword
+    cursor.execute(
+        """
+        CREATE PROCEDURE IF NOT EXISTS search(IN searchTerm VARCHAR(255))
+        BEGIN
+            SELECT *
+            FROM Song s
+            WHERE s.Title LIKE CONCAT('%', searchTerm,'%')
+            OR s.Artist LIKE CONCAT('%', searchTerm,'%');
+        END
+        """
+    )
+    conn.commit()
+    cursor.close()
+    print("Procedures created!")
+
+
 if __name__ == "__main__":
     conn = get_connection_no_db()
     init_db(conn)
     init_schema(conn)
+    create_procedures(conn)
     conn.close()
     print("Uppkoppling lyckades och databasen är skapad!")

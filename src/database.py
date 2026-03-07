@@ -99,11 +99,12 @@ def get_genre_with_songs():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
     cursor.execute(
-    """SELECT s.Song_ID, s.Title, s.Artist,
-    s.Name AS Genre, s.original_key, s.difficulty, s.year 
-    FROM Song s
-    JOIN Genre On s.Genre_ID = Genre.Genre_ID
-    """)
+        """SELECT s.Song_ID, s.Title, s.Artist,
+        Genre.Name AS Genre, s.original_key, s.difficulty, s.year 
+        FROM Song s
+        JOIN Genre On s.Genre_ID = Genre.Genre_ID
+        """
+    )
     result = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -113,12 +114,12 @@ def get_favorite_song_counter():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
     cursor.execute(
-    """
-    SELECT s.Title, s.Artist, Count(UserFavorite.Song_ID) 
+        """
+    SELECT s.Title, s.Artist, Count(UserFavorites.Song_ID) 
     AS counter_favorites
     FROM Song s
     LEFT JOIN UserFavorites ON s.Song_ID = UserFavorites.Song_ID
-    GROUP BY s.SongID, s.Title, s.Artist, s.difficulty
+    GROUP BY s.Song_ID, s.Title, s.Artist, s.difficulty
     ORDER BY counter_favorites DESC
     """
     )
@@ -183,6 +184,19 @@ def get_filtered_genre_difficulty(genre_ID = None, difficulty = None):
 
     cursor.execute(query, params if params else None)
     result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
+
+def call_search(searchTerm):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.callproc("search", [searchTerm])
+
+    result = []
+    for res in cursor.stored_results():
+        result = res.fetchall()
+
     cursor.close()
     conn.close()
     return result

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Notefy - Artists</title>
+    <title>Notefy - Search</title>
 </head>
 
 <body>
@@ -15,36 +15,31 @@
         <span id="nav-login"></span>
     </nav>
 
-    <h1>Artists</h1>
+    <h1>Search Results</h1>
+    <p id="search-term"></p>
 
-    <div id="artist-list"></div>
-
-    <div id="artist-songs" style="display:none;">
-        <h2 id="artist-name"></h2>
-        <button onclick="goBack()">← Back to Artists</button>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Genre</th>
-                    <th>Key</th>
-                    <th>Difficulty</th>
-                    <th>Year</th>
-                    <th id="fav-header"></th>
-                </tr>
-            </thead>
-            <tbody id="songs-table"></tbody>
-        </table>
-    </div>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Key</th>
+                <th>Difficulty</th>
+                <th>Year</th>
+                <th id="fav-header"></th>
+            </tr>
+        </thead>
+        <tbody id="results-table"></tbody>
+    </table>
 
     <script>
         const user_id = localStorage.getItem("user_id");
         const username = localStorage.getItem("username");
 
-        // Navbar
         if (user_id) {
             document.getElementById("nav-login").innerHTML =
                 `Logged in as <b>${username}</b> | <a href="profile.html">Profile</a> | <a href="#" onclick="logout()">Logout</a>`;
+            document.getElementById("fav-header").textContent = "Favorite";
         } else {
             document.getElementById("nav-login").innerHTML = `<a href="login.html">Login</a>`;
         }
@@ -65,27 +60,24 @@
             if (e.key === "Enter") search();
         });
 
-        async function loadArtists() {
-            const res = await fetch("http://127.0.0.1:8000/artists");
-            const artists = await res.json();
-            const container = document.getElementById("artist-list");
-            artists.forEach(artist => {
-                const div = document.createElement("div");
-                div.innerHTML = `<a href="#" onclick="loadArtistSongs('${artist.Artist}')">${artist.Artist}</a>`;
-                container.appendChild(div);
-            });
-        }
+        async function loadResults() {
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get("q");
+            if (!q) return;
 
-        async function loadArtistSongs(artist) {
-            const res = await fetch(`http://127.0.0.1:8000/artists/${encodeURIComponent(artist)}/songs`);
+            document.getElementById("search-term").textContent = `Results for: "${q}"`;
+            document.getElementById("search-input").value = q;
+
+            const res = await fetch(`http://127.0.0.1:8000/search?q=${encodeURIComponent(q)}`);
             const songs = await res.json();
-
-            document.getElementById("artist-list").style.display = "none";
-            document.getElementById("artist-songs").style.display = "block";
-            document.getElementById("artist-name").textContent = artist;
-
-            const tbody = document.getElementById("songs-table");
+            const tbody = document.getElementById("results-table");
             tbody.innerHTML = "";
+
+            if (songs.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='6'>No results found</td></tr>";
+                return;
+            }
+
             songs.forEach(song => {
                 const favoriteBtn = user_id
                     ? `<button onclick="addFavorite(${song.Song_ID})">★ Add</button>`
@@ -93,7 +85,7 @@
                 tbody.innerHTML += `
                     <tr>
                         <td>${song.Title}</td>
-                        <td>${song.Genre_ID}</td>
+                        <td>${song.Artist}</td>
                         <td>${song.original_key}</td>
                         <td>${song.difficulty}</td>
                         <td>${song.year}</td>
@@ -114,12 +106,7 @@
             }
         }
 
-        function goBack() {
-            document.getElementById("artist-songs").style.display = "none";
-            document.getElementById("artist-list").style.display = "block";
-        }
-
-        loadArtists();
+        loadResults();
     </script>
 </body>
 

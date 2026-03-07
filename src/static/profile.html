@@ -7,12 +7,13 @@
 </head>
 
 <body>
-    <nav>
-        <a href="index.html">Songs</a> |
-        <a href="artists.html">Artists</a> |
-        <a href="login.html">Login</a> |
-        <a href="profile.html">Profile</a>
-    </nav>
+<nav>
+    <a href="index.html">Songs</a> |
+    <a href="artists.html">Artists</a> |
+    <input type="text" id="search-input" placeholder="Search songs or artists...">
+    <button onclick="search()">Search</button> |
+    <span id="nav-login"></span>
+</nav>
 
     <div id="not-logged-in" style="display:none;">
         <h2>You need to be logged in to view this page</h2>
@@ -42,6 +43,31 @@
         const user_id = localStorage.getItem("user_id");
         const username = localStorage.getItem("username");
 
+        // Navbar
+        if (user_id) {
+            document.getElementById("nav-login").innerHTML =
+                `Logged in as <b>${username}</b> | <a href="profile.html">Profile</a> | <a href="#" onclick="logout()">Logout</a>`;
+        } else {
+            document.getElementById("nav-login").innerHTML = `<a href="login.html">Login</a>`;
+        }
+
+        function logout() {
+            localStorage.removeItem("user_id");
+            localStorage.removeItem("username");
+            window.location.href = "login.html";
+        }
+
+        function search() {
+            const term = document.getElementById("search-input").value;
+            if (!term) return;
+            window.location.href = `search.html?q=${encodeURIComponent(term)}`;
+        }
+
+        document.getElementById("search-input").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") search();
+        });
+
+        // Resten av profile-koden
         if (!user_id) {
             document.getElementById("not-logged-in").style.display = "block";
         } else {
