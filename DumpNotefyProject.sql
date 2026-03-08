@@ -195,6 +195,7 @@ CREATE TABLE `userfavorites` (
 
 LOCK TABLES `userfavorites` WRITE;
 /*!40000 ALTER TABLE `userfavorites` DISABLE KEYS */;
+INSERT INTO `userfavorites` VALUES (1,1),(3,1),(1,2),(3,2),(1,3),(1,5),(2,5),(3,5),(2,6),(1,12),(2,15),(1,24),(3,97),(3,103),(3,200);
 /*!40000 ALTER TABLE `userfavorites` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -233,4 +234,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-03-08 17:31:55
+-- Dump completed on 2026-03-08 19:31:23
