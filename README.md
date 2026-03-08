@@ -48,4 +48,4 @@ works after some trouble with missmatching passlib and bcrypt A.V
 
 2026-03-07 Made an trigger that works. This trigger is used when a user deletes their account. it deletes all song that the user made their favorite. J.G.L
 
-#TODO Add all Chords to chords table, add more genres ea. Punk and correct those songs in csv file
+2026-03-08 Rework of csv handeling, propper use of the Chords and SongChords table made and major html changes. project finished. Worked together from home to finalize the project on my PC. A.V

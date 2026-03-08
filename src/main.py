@@ -17,7 +17,9 @@ from src.database import (
     get_user_favorites,
     get_favorite_song_counter,
     get_genre_with_songs,
-    call_search
+    call_search,
+    delete_user,
+    get_song_specs
 )
 
 
@@ -108,6 +110,10 @@ def login(user: UserLogin):
         print(f"Login error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.delete("/user/{user_id}")
+def delete_ep(user_id: int):
+    delete_user(user_id)
+    return {"message": "USER HAS BEEN DELETED"}
 #Favorites
 
 @app.post("/favorites")
@@ -140,3 +146,7 @@ def counted_faves():
 @app.get("/search")
 def search_ep(q: str):
     return call_search(q)
+
+@app.get("/songs/{song_id}/chords")
+def get_song(song_id: int):
+    return get_song_specs(song_id)

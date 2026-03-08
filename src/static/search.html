@@ -4,6 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Notefy - Search</title>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 1px solid black;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
 </head>
 
 <body>
@@ -31,6 +55,18 @@
         </thead>
         <tbody id="results-table"></tbody>
     </table>
+
+    <!-- Modal -->
+    <div class="overlay" id="overlay" onclick="closeModal()"></div>
+    <div class="modal" id="song-modal">
+        <h2 id="modal-title"></h2>
+        <p><b>Artist:</b> <span id="modal-artist"></span></p>
+        <p><b>Key:</b> <span id="modal-key"></span></p>
+        <p><b>Difficulty:</b> <span id="modal-difficulty"></span></p>
+        <p><b>Year:</b> <span id="modal-year"></span></p>
+        <p><b>Chords:</b> <span id="modal-chords"></span></p>
+        <button onclick="closeModal()">Close</button>
+    </div>
 
     <script>
         const user_id = localStorage.getItem("user_id");
@@ -84,7 +120,7 @@
                     : "";
                 tbody.innerHTML += `
                     <tr>
-                        <td>${song.Title}</td>
+                        <td><a href="#" onclick="showSongDetails(${song.Song_ID}, '${song.Title}', '${song.Artist}', '${song.original_key}', '${song.difficulty}', ${song.year})">${song.Title}</a></td>
                         <td>${song.Artist}</td>
                         <td>${song.original_key}</td>
                         <td>${song.difficulty}</td>
@@ -93,6 +129,27 @@
                     </tr>
                 `;
             });
+        }
+
+        async function showSongDetails(song_id, title, artist, key, difficulty, year) {
+            document.getElementById("modal-title").textContent = title;
+            document.getElementById("modal-artist").textContent = artist;
+            document.getElementById("modal-key").textContent = key;
+            document.getElementById("modal-difficulty").textContent = difficulty;
+            document.getElementById("modal-year").textContent = year;
+            document.getElementById("modal-chords").textContent = "Loading...";
+
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("song-modal").style.display = "block";
+
+            const res = await fetch(`http://127.0.0.1:8000/songs/${song_id}/chords`);
+            const chords = await res.json();
+            document.getElementById("modal-chords").textContent = chords.map(c => c.Chords).join(" | ");
+        }
+
+        function closeModal() {
+            document.getElementById("overlay").style.display = "none";
+            document.getElementById("song-modal").style.display = "none";
         }
 
         async function addFavorite(song_id) {

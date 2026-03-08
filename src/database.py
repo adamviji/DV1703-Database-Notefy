@@ -32,6 +32,16 @@ def create_user(username, email, password):
     cursor.close()
     conn.close()
 
+def delete_user(user_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "DELETE FROM User WHERE User_ID = %s", (user_id,)
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 def get_user(username):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -85,6 +95,22 @@ def get_user_favorites(user_id):
     conn.close()
     return result
 
+def get_song_specs(song_id):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(
+        """
+        SELECT c.Name AS Chords
+        FROM Chord c
+        JOIN SongChords sc On c.Chord_ID = sc.Chord_ID
+        WHERE sc.Song_ID = %s
+        """,
+        (song_id,),
+    )
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
 
 def get_all_songs():
     conn = get_connection()
@@ -95,7 +121,7 @@ def get_all_songs():
     conn.close()
     return result
 
-# Edited like get_filtered_genre_difficulty to handle filters
+# Edited like get_filtered_genre_difficulty to handle filters aswell
 def get_genre_with_songs(genre_ID=None, difficulty=None):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)

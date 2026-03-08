@@ -22,22 +22,22 @@ def data_genres(conn):
     cursor.close()
     print("Genres added")
 
-def data_chords(conn):
-    cursor = conn.cursor()
-    chords = [
-        ("C",), ("D",), ("E",), ("F",), ("G",), ("A",), ("B",), #majors
-        ("Cm",), ("Dm",), ("Em",), ("Fm",), ("Gm",), ("Am",), ("Bm",), #minors
-        ("C#",), ("D#",), ("E#",), ("F#",), ("G#",), ("A#",), ("B#",), #Sharp major
-        ("C#m",), ("D#m",), ("E#m",), ("F#m",), ("G#m",), ("A#m",), ("B#m",), #Sharp minor
-        ("Cb",), ("Db",), ("Eb",), ("Fb",), ("Gb",), ("Ab",), ("Bb",), #Flat major
-        ("Cbm",), ("Dbm",), ("Ebm",), ("Fbm",), ("Gbm",), ("Abm",), ("Bbm",) #Flat minor
-    ]
-    cursor.executemany(
-        "INSERT IGNORE INTO Chord (Name) VALUES (%s)", chords
-        )
-    conn.commit()
-    cursor.close()
-    print("Chords added")
+# def data_chords(conn):
+#     cursor = conn.cursor()
+#     chords = [
+#         ("C",), ("D",), ("E",), ("F",), ("G",), ("A",), ("B",), #majors
+#         ("Cm",), ("Dm",), ("Em",), ("Fm",), ("Gm",), ("Am",), ("Bm",), #minors
+#         ("C#",), ("D#",), ("E#",), ("F#",), ("G#",), ("A#",), ("B#",), #Sharp major
+#         ("C#m",), ("D#m",), ("E#m",), ("F#m",), ("G#m",), ("A#m",), ("B#m",), #Sharp minor
+#         ("Cb",), ("Db",), ("Eb",), ("Fb",), ("Gb",), ("Ab",), ("Bb",), #Flat major
+#         ("Cbm",), ("Dbm",), ("Ebm",), ("Fbm",), ("Gbm",), ("Abm",), ("Bbm",) #Flat minor
+#     ]
+#     cursor.executemany(
+#         "INSERT IGNORE INTO Chord (Name) VALUES (%s)", chords
+#         )
+#     conn.commit()
+#     cursor.close()
+#     print("Chords added")
 
 
 def data_songs(conn):
@@ -98,7 +98,7 @@ def import_songs_from_csv(conn, filepath):
             else:
                 print(f"Genre '{row['Genre']}' was not found, skipping {row['Title']}")
                 continue
-            
+            #lägger till låten i Song
             cursor.execute(
                 """
                 INSERT IGNORE INTO Song (Title, Artist, Genre_ID, original_key, difficulty, year)
@@ -107,6 +107,39 @@ def import_songs_from_csv(conn, filepath):
                 (row['Title'], row['Artist'], genre_id, row['Key'], row['Difficulty'], row['Year'])
             )
 
+            # Hämta song_id för den inlaggda låten i song
+            cursor.execute(
+                "SELECT Song_ID FROM Song WHERE Title = %s AND Artist = %s", (row['Title'], row['Artist'],)
+                )
+            song = cursor.fetchone()
+            if not song:
+                continue
+            song_id = song["Song_ID"]
+
+            # Hantera Chords
+            chords = row["Chords"].split(":")
+            for chord_name in chords:
+                chord_name = chord_name.strip()
+                if not chord_name:
+                    continue
+
+                # Lägg in Chords om de inte finns
+                cursor.execute(
+                    "INSERT IGNORE INTO Chord (Name) VALUES (%s)", (chord_name, )
+                )
+                # Hämta Chord_ID
+                cursor.execute(
+                    "SELECT Chord_ID FROM Chord WHERE  Name = %s", (chord_name,)
+                )
+                chords = cursor.fetchone()
+                if not chords:
+                    continue
+                chord_id = chords["Chord_ID"]
+
+                # Koppla SongChords song+chord
+                cursor.execute(
+                    "INSERT IGNORE INTO SongChords (Song_ID, Chord_ID) VALUES (%s, %s)", (song_id, chord_id,)
+                )
         conn.commit()
         cursor.close()
         print("CSV imported!")
@@ -114,9 +147,9 @@ def import_songs_from_csv(conn, filepath):
 if __name__ == "__main__":
     conn = get_connection()
     data_genres(conn)
-    data_chords(conn)
+    # data_chords(conn)
     data_songs(conn)
     data_users(conn)
-    import_songs_from_csv(conn, "songs_200.csv")
+    import_songs_from_csv(conn, "songs_200_with_chords.csv")
     conn.close()
     print("Data Added!")
