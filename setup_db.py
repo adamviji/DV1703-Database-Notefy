@@ -113,11 +113,28 @@ def create_procedures(conn):
     cursor.close()
     print("Procedures created!")
 
+def create_trigger(conn):
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        CREATE TRIGGER IF NOT EXISTS remove_favorites BEFORE DELETE ON User
+        FOR EACH ROW
+        BEGIN
+            DELETE FROM UserFavorites
+            WHERE User_ID = OLD.User_ID;
+        END 
+        """
+    )
+    conn.commit()
+    cursor.close()
+    print("Trigger created")
+
 
 if __name__ == "__main__":
     conn = get_connection_no_db()
     init_db(conn)
     init_schema(conn)
     create_procedures(conn)
+    create_trigger(conn)
     conn.close()
     print("Uppkoppling lyckades och databasen är skapad!")

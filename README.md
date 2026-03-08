@@ -46,4 +46,6 @@ works after some trouble with missmatching passlib and bcrypt A.V
 
 2026-03-07 html fixes and created a procedure to search on title or artist A.V
 
+2026-03-07 Made an trigger that works. This trigger is used when a user deletes their account. it deletes all song that the user made their favorite. J.G.L
+
 #TODO Add all Chords to chords table, add more genres ea. Punk and correct those songs in csv file
