@@ -22,24 +22,6 @@ def data_genres(conn):
     cursor.close()
     print("Genres added")
 
-# def data_chords(conn):
-#     cursor = conn.cursor()
-#     chords = [
-#         ("C",), ("D",), ("E",), ("F",), ("G",), ("A",), ("B",), #majors
-#         ("Cm",), ("Dm",), ("Em",), ("Fm",), ("Gm",), ("Am",), ("Bm",), #minors
-#         ("C#",), ("D#",), ("E#",), ("F#",), ("G#",), ("A#",), ("B#",), #Sharp major
-#         ("C#m",), ("D#m",), ("E#m",), ("F#m",), ("G#m",), ("A#m",), ("B#m",), #Sharp minor
-#         ("Cb",), ("Db",), ("Eb",), ("Fb",), ("Gb",), ("Ab",), ("Bb",), #Flat major
-#         ("Cbm",), ("Dbm",), ("Ebm",), ("Fbm",), ("Gbm",), ("Abm",), ("Bbm",) #Flat minor
-#     ]
-#     cursor.executemany(
-#         "INSERT IGNORE INTO Chord (Name) VALUES (%s)", chords
-#         )
-#     conn.commit()
-#     cursor.close()
-#     print("Chords added")
-
-
 def data_songs(conn):
     cursor = conn.cursor()
     songs = [
