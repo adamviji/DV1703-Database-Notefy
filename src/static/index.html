@@ -50,6 +50,18 @@
     <label><input type="checkbox" class="difficulty-filter" value="intermediate"> Intermediate</label>
     <label><input type="checkbox" class="difficulty-filter" value="advanced"> Advanced</label>
 
+<h3>Most Favorited Songs</h3>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Favorites</th>
+        </tr>
+    </thead>
+    <tbody id="favorites-count-table"></tbody>
+</table>
+
     <h3>Songs</h3>
     <table border="1">
         <thead>
@@ -128,6 +140,22 @@
             });
         }
 
+        async function loadFavoriteCount() {
+                const res = await fetch("http://127.0.0.1:8000/songs/counted_favorites");
+                const songs = await res.json();
+                const tbody = document.getElementById("favorites-count-table");
+                tbody.innerHTML = "";
+                songs.slice(0, 10).forEach(song => {
+                    tbody.innerHTML += `
+            <tr>
+                <td>${song.Title}</td>
+                <td>${song.Artist}</td>
+                <td>${song.counter_favorites}</td>
+            </tr>
+        `;
+                });
+            }
+
         async function loadSongs() {
             let url = "http://127.0.0.1:8000/songs/complete_tables?";
             if (selectedGenres.length > 0) url += `genre_ids=${selectedGenres.join(",")}&`;
@@ -198,6 +226,7 @@
             });
         });
 
+        loadFavoriteCount();
         loadGenres();
         loadSongs();
     </script>
